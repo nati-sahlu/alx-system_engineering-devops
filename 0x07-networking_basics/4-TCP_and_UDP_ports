@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
+# displays listening port
 
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root to display all the listening ports"
-  exit 1
-fi
-
-netstat -tuln -p
+sudo netstat -pl
