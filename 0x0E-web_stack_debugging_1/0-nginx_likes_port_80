@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
-# script that restores the default server port
 
-sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-sudo service nginx start
+apt-get update && apt-get install -y nginx
+
+ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+
+sed -i 's/^\s*listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+
+service nginx restart
+
+if ! pgrep -x "nginx" > /dev/null; then
+    echo "Error: Nginx is not running" >&2
+    exit 1
+fi
+
+if ! netstat -tulnp | grep ":80 " > /dev/null; then
+    echo "Error: Nginx is not listening on port 80" >&2
+    exit 1
+fi
+
+echo "Nginx is running and listening on port 80."
 
