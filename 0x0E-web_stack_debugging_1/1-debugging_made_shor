@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
-# change nginx to listen on port 80 and kill it
-sed -i "s/8080/80/g" /etc/nginx/sites-enabled/default
-pkill -f --signal 1 "/usr/sbin/nginx"
+
+apt-get update
+apt-get install -y nginx
+sed -i 's/^\s*listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+service nginx restart
+
