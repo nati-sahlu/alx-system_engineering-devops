@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
+# script that restores the default server port
 
-dpkg -l | grep -qw nginx || apt-get update && apt-get install -y nginx
-systemctl enable nginx
-systemctl start nginx
-ufw allow 80/tcp
-sed -i 's/^\s*listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
-sed -i 's/^\s*listen \[::\]:80 default_server;/listen [::]:80;/' /etc/nginx/sites-available/default
+sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sudo service nginx start
 
-# Restart Nginx to apply changes
-systemctl restart nginx
