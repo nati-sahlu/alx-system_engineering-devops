@@ -5,14 +5,17 @@
 sudo apt-get update
 
 # install UFW if not already installed
-sudo apt-get install ufw
+sudo apt-get install -y ufw
+
+# Reset UFW to default settings
+sudo ufw --force reset
 
 # enable UFW
 sudo ufw enable
 
 # set default policies
 sudo ufw default deny incoming
-
+sudo ufw default allow outgoing
 # allow specific ports
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
