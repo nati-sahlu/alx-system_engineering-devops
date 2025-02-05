@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Install UFW if not installed
 if ! command -v ufw &> /dev/null; then
     echo "Installing UFW..."
@@ -14,9 +15,11 @@ sudo ufw allow 22/tcp  # SSH
 sudo ufw allow 80/tcp  # HTTP
 sudo ufw allow 443/tcp # HTTPS
 
+# Explicitly deny all other incoming traffic (optional, as default deny already does this)
+sudo ufw deny in from any to any
+
 # Enable UFW
 sudo ufw --force enable
 
 # Show status
 sudo ufw status verbose
-
