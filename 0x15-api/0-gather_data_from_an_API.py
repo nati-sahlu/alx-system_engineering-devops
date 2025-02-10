@@ -1,45 +1,31 @@
 #!/usr/bin/python3
-""" Script to fetch an employee's TODO list progress from an API.
-"""
-import json
+"""Accessing a REST API for todo lists of employees"""
+
 import requests
 import sys
 
-if __name__ == "__main__":
-    base_url = "https://jsonplaceholder.typicode.com/"
 
-    # Validate input
-    if len(sys.argv) != 2 or not sys.argv[1].isdigit():
-        print("Usage: {} employee_id".format(sys.argv[0]))
-        exit(1)
+if __name__ == '__main__':
+    employeeId = sys.argv[1]
+    baseUrl = "https://jsonplaceholder.typicode.com/users"
+    url = baseUrl + "/" + employeeId
 
-    employee_id = sys.argv[1]
+    response = requests.get(url)
+    employeeName = response.json().get('name')
 
-    # Fetch user details
-    user_url = "{}users/{}".format(base_url, employee_id)
-    response = requests.get(user_url)
+    todoUrl = url + "/todos"
+    response = requests.get(todoUrl)
+    tasks = response.json()
+    done = 0
+    done_tasks = []
 
-    if response.status_code != 200:
-        print("Error: Invalid Employee ID")
-        exit(1)
+    for task in tasks:
+        if task.get('completed'):
+            done_tasks.append(task)
+            done += 1
 
-    user = response.json()
-    if not user:
-        print("Error: No user found")
-        exit(1)
+    print("Employee {} is done with tasks({}/{}):"
+          .format(employeeName, done, len(tasks)))
 
-    name = user.get("name")
-
-    # Fetch user tasks
-    tasks_url = "{}todos?userId={}".format(base_url, employee_id)
-    response = requests.get(tasks_url)
-    todos = response.json()
-
-    # Filter completed tasks
-    completed_tasks = [task for task in todos if task.get("completed")]
-
-    # Print output in exact format
-    print("Employee {} is done with tasks({}/{}):".format(name, len(completed_tasks), len(todos)))
-    for task in completed_tasks:
-        print("\t {}".format(task.get("title")))
-
+    for task in done_tasks:
+        print("\t {}".format(task.get('title')))
